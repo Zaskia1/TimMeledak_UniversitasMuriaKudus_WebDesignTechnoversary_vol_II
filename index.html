@@ -38,7 +38,6 @@
       </div>
 
       <div id="modalReceiptBody" class="space-y-3 text-sm text-slate-700 bg-eco-soft/70 p-4 rounded-xl border border-eco-primary/20">
-        <!-- Diisi via JS -->
       </div>
 
       <div class="mt-6 flex gap-3">
@@ -52,9 +51,7 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       NAVBAR (Sticky & Responsif)
-  ========================================================= -->
+  <!-- NAVBAR (Sticky & Responsif)-->
   <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex justify-between items-center h-20">
@@ -68,7 +65,6 @@
           </div>
         </a>
 
-        <!-- Desktop Navigation Links -->
         <div class="hidden md:flex items-center gap-7">
           <button onclick="navigateTo('home')" data-page="home" class="nav-link active relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">Home</button>
           <button onclick="navigateTo('about')" data-page="about" class="nav-link relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">About</button>
@@ -80,14 +76,12 @@
           </button>
         </div>
 
-        <!-- Mobile Menu Button -->
         <button id="mobileMenuBtn" class="md:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu">
           <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Dropdown Menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 pt-3 pb-6 space-y-2 shadow-lg">
       <button onclick="navigateTo('home')" data-page="home" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-semibold bg-eco-soft text-eco-primary">Home</button>
       <button onclick="navigateTo('about')" data-page="about" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">About</button>
@@ -101,20 +95,14 @@
     </div>
   </nav>
 
-  <!-- =========================================================
-       MAIN CONTENT AREA (Multi-Page SPA Views)
-  ========================================================= -->
+  <!-- MAIN CONTENT AREA-->
   <main class="flex-grow">
 
-    <!-- *******************************************************
-         HALAMAN 1: HOME
-    ******************************************************** -->
+    <!-- HALAMAN HOME-->
     <section id="view-home" class="page-view active">
-      <!-- Hero Section -->
       <div class="relative overflow-hidden bg-gradient-to-br from-eco-soft via-white to-emerald-50/60 pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-slate-200/60">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <!-- Hero Left Copy -->
             <div class="lg:col-span-7 space-y-6">
               <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs sm:text-sm font-semibold border border-eco-primary/20">
                 <span class="w-2 h-2 rounded-full bg-eco-primary animate-pulse"></span>
@@ -140,7 +128,6 @@
                 </button>
               </div>
 
-              <!-- Mini Trust Info -->
               <div class="pt-4 flex flex-wrap items-center gap-6 text-xs sm:text-sm text-slate-500 font-medium">
                 <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-eco-primary"></i> Transparansi Harga/Kg</span>
                 <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-eco-primary"></i> Dukungan Event Ormawa</span>
@@ -148,7 +135,6 @@
               </div>
             </div>
 
-            <!-- Hero Right Stats Card -->
             <div class="lg:col-span-5">
               <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/70 border border-slate-100 relative">
                 <div class="flex items-center justify-between mb-6">
@@ -207,7 +193,7 @@
         </div>
       </div>
 
-      <!-- Cara Kerja Sistem (3 Langkah) -->
+      <!-- Cara Kerja Sistem -->
       <div class="py-20 max-w-6xl mx-auto px-4 sm:px-6">
         <div class="text-center max-w-2xl mx-auto mb-14">
           <span class="px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs font-bold uppercase tracking-wider">Alur Digitalisasi</span>
@@ -218,7 +204,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Step 1 -->
           <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
             <div class="w-14 h-14 rounded-2xl bg-eco-light text-eco-primary font-display font-extrabold text-xl flex items-center justify-center mb-6">
               01
@@ -229,7 +214,6 @@
             </p>
           </div>
 
-          <!-- Step 2 -->
           <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
             <div class="w-14 h-14 rounded-2xl bg-eco-light text-eco-primary font-display font-extrabold text-xl flex items-center justify-center mb-6">
               02
@@ -240,7 +224,6 @@
             </p>
           </div>
 
-          <!-- Step 3 -->
           <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
             <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 font-display font-extrabold text-xl flex items-center justify-center mb-6">
               03
@@ -253,7 +236,6 @@
         </div>
       </div>
 
-      <!-- Call To Action Banner -->
       <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
         <div class="bg-gradient-to-r from-eco-dark to-eco-primary rounded-3xl p-8 sm:p-12 text-white flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
           <div class="space-y-3 text-center lg:text-left max-w-xl">
@@ -275,11 +257,8 @@
       </div>
     </section>
 
-    <!-- *******************************************************
-         HALAMAN 2: ABOUT
-    ******************************************************** -->
+    <!-- HALAMAN ABOUT -->
     <section id="view-about" class="page-view">
-      <!-- Page Banner -->
       <div class="bg-eco-dark text-white py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Profil & Visi Inisiatif</span>
@@ -290,7 +269,6 @@
         </div>
       </div>
 
-      <!-- Story & Pilar -->
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="space-y-5">
@@ -312,7 +290,6 @@
             </div>
           </div>
 
-          <!-- Pilar Card -->
           <div class="bg-white rounded-3xl p-7 sm:p-9 border border-slate-200/80 shadow-lg space-y-6">
             <h3 class="font-display font-bold text-xl text-slate-900 border-b border-slate-100 pb-4">4 Pilar Utama Green Campus UMK</h3>
             
@@ -358,51 +335,47 @@
           </div>
         </div>
 
-        <!-- Informasi Tim Pengembang-->
         <div class="bg-eco-soft/80 rounded-3xl p-8 sm:p-10 border border-eco-primary/20">
           <div class="text-center max-w-xl mx-auto mb-10">
-            <span class="px-3.5 py-1 rounded-full bg-white text-eco-primary text-xs font-bold border border-eco-primary/20">Dies Natalis Teknik Informatika 2026</span>
+            <span class="px-3.5 py-1 rounded-full bg-white text-eco-primary text-xs font-bold border border-eco-primary/20">Tim Meledak Universitas Muria Kudus 2026</span>
             <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 mt-3">Tim Pengembang Inovasi</h2>
-            <p class="text-sm text-slate-600 mt-2">Dikembangkan oleh mahasiswa Teknik Informatika Universitas Muria Kudus untuk mendukung ekosistem kampus hijau.</p>
+            <p class="text-sm text-slate-600 mt-2">Dikembangkan oleh mahasiswa Teknik Universitas Muria Kudus untuk mendukung ekosistem kampus hijau.</p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
               <div class="w-16 h-16 rounded-full bg-eco-primary text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
-                K1
+                ZAP
               </div>
-              <h4 class="font-bold text-slate-900">Ketua Tim Pengembang</h4>
+              <h4 class="font-bold text-slate-900">Zaskia Amelia Putri</h4>
               <p class="text-xs font-semibold text-eco-primary mt-1">UI/UX Designer & Frontend</p>
               <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
             </div>
 
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
               <div class="w-16 h-16 rounded-full bg-eco-dark text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
-                A1
+                R
               </div>
-              <h4 class="font-bold text-slate-900">Anggota Tim 1</h4>
+              <h4 class="font-bold text-slate-900">Ramadan</h4>
               <p class="text-xs font-semibold text-eco-primary mt-1">Logic & JavaScript Developer</p>
               <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
             </div>
 
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
               <div class="w-16 h-16 rounded-full bg-amber-500 text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
-                A2
+                ABT
               </div>
-              <h4 class="font-bold text-slate-900">Anggota Tim 2</h4>
-              <p class="text-xs font-semibold text-eco-primary mt-1">Riset Lingkungan & Konten</p>
-              <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
+              <h4 class="font-bold text-slate-900">Anggitia Bintang Triyana</h4>
+              <p class="text-xs font-semibold text-eco-primary mt-1">Riset Lingkungan</p>
+              <p class="text-xs text-slate-500 mt-2">Program Studi Sistem Informasi • UMK</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- *******************************************************
-         HALAMAN 3: EDUKASI & KATALOG
-    ******************************************************** -->
+    <!-- HALAMAN 3: EDUKASI & KATALOG -->
     <section id="view-edukasi" class="page-view">
-      <!-- Page Banner -->
       <div class="bg-eco-dark text-white py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Katalog & Panduan Pemilahan</span>
@@ -414,7 +387,6 @@
       </div>
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-        <!-- Filter Tabs -->
         <div class="flex flex-wrap items-center justify-center gap-3 mb-10">
           <button onclick="filterCatalog('all', this)" class="catalog-filter-btn active px-5 py-2.5 rounded-full text-sm font-semibold bg-eco-primary text-white shadow-sm transition">
             Semua Kategori (6)
@@ -430,9 +402,7 @@
           </button>
         </div>
 
-        <!-- Katalog Grid -->
         <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          <!-- Item 1 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="plastik">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -454,7 +424,6 @@
             </div>
           </div>
 
-          <!-- Item 2 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="kertas">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -476,7 +445,6 @@
             </div>
           </div>
 
-          <!-- Item 3 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="kertas">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -498,7 +466,6 @@
             </div>
           </div>
 
-          <!-- Item 4 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="plastik">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -520,7 +487,6 @@
             </div>
           </div>
 
-          <!-- Item 5 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="logam">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -542,7 +508,6 @@
             </div>
           </div>
 
-          <!-- Item 6 -->
           <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="logam">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -565,7 +530,6 @@
           </div>
         </div>
 
-        <!-- Artikel Panduan Zero-Waste Kampus -->
         <div class="mt-20">
           <div class="text-center max-w-2xl mx-auto mb-10">
             <span class="px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs font-bold uppercase tracking-wider">Artikel Edukasi</span>
@@ -607,11 +571,8 @@
       </div>
     </section>
 
-    <!-- *******************************************************
-         HALAMAN 4: SIMULASI SETOR (Kalkulator Digital)
-    ******************************************************** -->
+    <!-- HALAMAN SIMULASI SETOR -->
     <section id="view-simulasi" class="page-view">
-      <!-- Page Banner -->
       <div class="bg-eco-dark text-white py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Kalkulator Tabungan Sampah</span>
@@ -624,7 +585,6 @@
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <!-- Left Form Input (6 cols) -->
           <div class="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
             <div class="flex items-center gap-3 mb-6">
               <div class="w-10 h-10 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center">
@@ -689,7 +649,6 @@
 
             <!-- Item List -->
             <div id="receiptList" class="space-y-3 max-h-72 overflow-y-auto pr-1">
-              <!-- Diisi via JavaScript -->
             </div>
 
             <!-- Totals -->
@@ -726,11 +685,8 @@
       </div>
     </section>
 
-    <!-- *******************************************************
-         HALAMAN 5: CONTACT
-    ******************************************************** -->
+    <!-- HALAMAN CONTACT -->
     <section id="view-contact" class="page-view">
-      <!-- Page Banner -->
       <div class="bg-eco-dark text-white py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Lokasi & Layanan Jemput</span>
@@ -861,9 +817,7 @@
 
   </main>
 
-  <!-- =========================================================
-       FOOTER
-  ========================================================= -->
+  <!-- FOOTER -->
   <footer class="bg-slate-900 text-slate-300 pt-14 pb-8 border-t border-slate-800">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-10 border-b border-slate-800">
@@ -910,9 +864,6 @@
     </div>
   </footer>
 
-  <!-- =========================================================
-       JAVASCRIPT LOGIC (Navigasi, Counter, Filter, Kalkulator)
-  ========================================================= -->
   <script src="js/script.js"></script>
 </body>
 </html>
