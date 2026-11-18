@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMK EcoBank | Digitalisasi Bank Sampah Universitas Muria Kudus</title>
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Load Lucide Icons (Open Source) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script src="js/tailwind.config.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body class="flex flex-col min-h-screen antialiased selection:bg-eco-light selection:text-eco-dark">
+
+  <!-- TOAST NOTIFICATION CONTAINER (Pengganti alert()) -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- MODAL BUKTI SETOR DIGITAL -->
+  <div id="receiptModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-eco-primary text-white flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-slate-900">Tiket Setor Digital</h3>
+            <p class="text-xs text-slate-500">Unit Bank Sampah Pojok Belakang UMK</p>
+          </div>
+        </div>
+        <button onclick="closeReceiptModal()" class="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="modalReceiptBody" class="space-y-3 text-sm text-slate-700 bg-eco-soft/70 p-4 rounded-xl border border-eco-primary/20">
+        <!-- Diisi via JS -->
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button onclick="window.print()" class="flex-1 py-2.5 px-4 rounded-xl border-2 border-eco-primary text-eco-primary font-semibold hover:bg-eco-light/50 transition flex items-center justify-center gap-2">
+          <i data-lucide="printer" class="w-4 h-4"></i> Cetak Tiket
+        </button>
+        <button onclick="closeReceiptModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-eco-primary text-white font-semibold hover:bg-eco-dark transition">
+          Selesai
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       NAVBAR (Sticky & Responsif)
+  ========================================================= -->
+  <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo Brand -->
+        <a href="#home" onclick="navigateTo('home')" class="flex items-center gap-3 group">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-eco-primary to-eco-dark text-white flex items-center justify-center shadow-md shadow-eco-primary/20 group-hover:scale-105 transition">
+            <i data-lucide="recycle" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="font-display font-extrabold text-xl tracking-tight text-eco-dark block leading-none">UMK EcoBank</span>
+            <span class="text-[11px] font-medium text-slate-500 tracking-wide">Green Campus Digital</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex items-center gap-7">
+          <button onclick="navigateTo('home')" data-page="home" class="nav-link active relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">Home</button>
+          <button onclick="navigateTo('about')" data-page="about" class="nav-link relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">About</button>
+          <button onclick="navigateTo('edukasi')" data-page="edukasi" class="nav-link relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">Edukasi & Katalog</button>
+          <button onclick="navigateTo('contact')" data-page="contact" class="nav-link relative text-sm font-medium text-slate-600 hover:text-eco-primary transition py-1">Contact</button>
+          <button onclick="navigateTo('simulasi')" data-page="simulasi" class="ml-2 px-5 py-2.5 rounded-xl bg-eco-primary hover:bg-eco-dark text-white text-sm font-semibold shadow-md shadow-eco-primary/20 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span>Simulasi Setor</span>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuBtn" class="md:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 pt-3 pb-6 space-y-2 shadow-lg">
+      <button onclick="navigateTo('home')" data-page="home" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-semibold bg-eco-soft text-eco-primary">Home</button>
+      <button onclick="navigateTo('about')" data-page="about" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">About</button>
+      <button onclick="navigateTo('edukasi')" data-page="edukasi" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">Edukasi & Katalog</button>
+      <button onclick="navigateTo('contact')" data-page="contact" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50">Contact</button>
+      <div class="pt-2">
+        <button onclick="navigateTo('simulasi')" data-page="simulasi" class="w-full py-3 px-4 rounded-xl bg-eco-primary text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-md">
+          <i data-lucide="calculator" class="w-4 h-4"></i> Simulasi Setor Sampah
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =========================================================
+       MAIN CONTENT AREA (Multi-Page SPA Views)
+  ========================================================= -->
+  <main class="flex-grow">
+
+    <!-- *******************************************************
+         HALAMAN 1: HOME
+    ******************************************************** -->
+    <section id="view-home" class="page-view active">
+      <!-- Hero Section -->
+      <div class="relative overflow-hidden bg-gradient-to-br from-eco-soft via-white to-emerald-50/60 pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-slate-200/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Hero Left Copy -->
+            <div class="lg:col-span-7 space-y-6">
+              <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs sm:text-sm font-semibold border border-eco-primary/20">
+                <span class="w-2 h-2 rounded-full bg-eco-primary animate-pulse"></span>
+                Inovasi Digital Green Campus • Universitas Muria Kudus
+              </div>
+
+              <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[3.25rem] text-slate-900 leading-[1.15] tracking-tight">
+                Ubah Sampah Kampus Jadi <span class="text-eco-primary underline decoration-eco-accent decoration-4 underline-offset-4">Saldo & Poin</span> Berkelanjutan
+              </h1>
+
+              <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                Menghubungkan seluruh mahasiswa, dosen, dan organisasi kampus dengan fasilitas <strong>Bank Sampah di area pojok belakang kampus UMK</strong> melalui sistem pencatatan digital yang transparan, edukatif, dan bernilai ekonomis.
+              </p>
+
+              <div class="flex flex-wrap items-center gap-4 pt-2">
+                <button onclick="navigateTo('simulasi')" class="px-7 py-4 rounded-xl bg-eco-primary hover:bg-eco-dark text-white font-semibold shadow-lg shadow-eco-primary/25 transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+                  <i data-lucide="calculator" class="w-5 h-5"></i>
+                  <span>Coba Kalkulator Setor</span>
+                </button>
+                <button onclick="navigateTo('about')" class="px-7 py-4 rounded-xl bg-white hover:bg-eco-soft text-eco-primary font-semibold border-2 border-eco-primary transition flex items-center gap-2">
+                  <span>Kenali Lokasi & Misi</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- Mini Trust Info -->
+              <div class="pt-4 flex flex-wrap items-center gap-6 text-xs sm:text-sm text-slate-500 font-medium">
+                <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-eco-primary"></i> Transparansi Harga/Kg</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-eco-primary"></i> Dukungan Event Ormawa</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-eco-primary"></i> Tukar EcoPoin</span>
+              </div>
+            </div>
+
+            <!-- Hero Right Stats Card -->
+            <div class="lg:col-span-5">
+              <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/70 border border-slate-100 relative">
+                <div class="flex items-center justify-between mb-6">
+                  <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-eco-primary">Live Impact Dashboard</span>
+                    <h2 class="font-display font-bold text-xl text-slate-900 mt-0.5">Dampak Nyata Kampus Kita</h2>
+                  </div>
+                  <div class="w-11 h-11 rounded-2xl bg-eco-light text-eco-primary flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                  </div>
+                </div>
+
+                <p class="text-sm text-slate-500 mb-6">
+                  Rekapitulasi pengelolaan limbah terpilah dari fakultas dan sekretariat UKM di Universitas Muria Kudus.
+                </p>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="p-4 sm:p-5 rounded-2xl bg-eco-soft border border-eco-primary/15 text-center">
+                    <div class="font-display font-extrabold text-2xl sm:text-3xl text-eco-primary">
+                      <span class="stat-counter" data-target="1450">0</span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Kg Sampah Terkelola</p>
+                  </div>
+
+                  <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/70 text-center">
+                    <div class="font-display font-extrabold text-2xl sm:text-3xl text-eco-dark">
+                      <span class="stat-counter" data-target="320">0</span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Nasabah Mahasiswa</p>
+                  </div>
+
+                  <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/70 text-center">
+                    <div class="font-display font-extrabold text-2xl sm:text-3xl text-eco-dark">
+                      <span class="stat-counter" data-target="8">0</span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Titik Drop-Box Fakultas</p>
+                  </div>
+
+                  <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-eco-accent/30 text-center">
+                    <div class="font-display font-extrabold text-2xl sm:text-3xl text-amber-600">
+                      <span class="stat-counter" data-target="94">0</span>%
+                    </div>
+                    <p class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Reduksi Residu TPA</p>
+                  </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                  <span>Zona Terpadu Pojok Belakang UMK</span>
+                  <span class="inline-flex items-center gap-1 font-semibold text-eco-primary">
+                    <span class="w-2 h-2 rounded-full bg-eco-primary"></span> Unit Aktif
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cara Kerja Sistem (3 Langkah) -->
+      <div class="py-20 max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs font-bold uppercase tracking-wider">Alur Digitalisasi</span>
+          <h2 class="font-display font-extrabold text-2xl sm:text-4xl text-slate-900 mt-3">Dari Pojok Kampus Menuju Ekosistem Digital</h2>
+          <p class="text-slate-600 mt-3 text-sm sm:text-base">
+            Tiga langkah praktis bagi mahasiswa, dosen, dan panitia kegiatan mahasiswa (Ormawa) untuk berpartisipasi aktif.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Step 1 -->
+          <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-eco-light text-eco-primary font-display font-extrabold text-xl flex items-center justify-center mb-6">
+              01
+            </div>
+            <h3 class="font-display font-bold text-xl text-slate-900 mb-3">Pilah dari Kelas & Sekretariat</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Pisahkan botol plastik minuman, kertas bekas tugas/laporan, serta kardus konsumsi acara kampus agar tidak tercampur sampah basah.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-eco-light text-eco-primary font-display font-extrabold text-xl flex items-center justify-center mb-6">
+              02
+            </div>
+            <h3 class="font-display font-bold text-xl text-slate-900 mb-3">Timbang & Input Digital</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Hitung estimasi melalui menu <strong>Simulasi Setor</strong>, lalu bawa ke unit Bank Sampah di pojok belakang kampus UMK atau ajukan penjemputan event.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 font-display font-extrabold text-xl flex items-center justify-center mb-6">
+              03
+            </div>
+            <h3 class="font-display font-bold text-xl text-slate-900 mb-3">Tukar Saldo & EcoPoin</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Saldo tabungan rupiah bisa dicairkan untuk kas kelas/Ormawa, sementara <strong>EcoPoin</strong> dapat ditukar tumbler, bibit tanaman, atau voucher kantin.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call To Action Banner -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+        <div class="bg-gradient-to-r from-eco-dark to-eco-primary rounded-3xl p-8 sm:p-12 text-white flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
+          <div class="space-y-3 text-center lg:text-left max-w-xl">
+            <span class="inline-block px-3 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold">Mulai Langkah Kecil Hari Ini</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl">Punya Banyak Kardus & Botol Bekas Acara Kampus?</h2>
+            <p class="text-emerald-100 text-sm sm:text-base">
+              Cek katalog harga sampah terbaru atau jadwalkan penjemputan kolektif langsung dari sekretariat fakultasmu.
+            </p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-4 shrink-0">
+            <button onclick="navigateTo('edukasi')" class="px-6 py-3.5 rounded-xl bg-eco-accent hover:bg-yellow-400 text-slate-900 font-bold transition shadow-md">
+              Lihat Harga Sampah
+            </button>
+            <button onclick="navigateTo('contact')" class="px-6 py-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold backdrop-blur-sm border border-white/25 transition">
+              Jadwalkan Jemput
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- *******************************************************
+         HALAMAN 2: ABOUT
+    ******************************************************** -->
+    <section id="view-about" class="page-view">
+      <!-- Page Banner -->
+      <div class="bg-eco-dark text-white py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Profil & Visi Inisiatif</span>
+          <h1 class="font-display font-extrabold text-3xl sm:text-4xl mt-3">Tentang UMK EcoBank</h1>
+          <p class="text-emerald-100 max-w-2xl mx-auto mt-3 text-sm sm:text-base">
+            Mengubah fasilitas Bank Sampah di sudut belakang kampus Universitas Muria Kudus menjadi pusat inovasi ekonomi sirkular berbasis digital.
+          </p>
+        </div>
+      </div>
+
+      <!-- Story & Pilar -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="space-y-5">
+            <span class="px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs font-bold">Latar Belakang Masalah</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 leading-snug">
+              Mengangkat Potensi Bank Sampah Pojok Belakang Kampus UMK
+            </h2>
+            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+              Di area pojok belakang kampus Universitas Muria Kudus terdapat fasilitas pengelolaan dan bank sampah yang memiliki peran vital menjaga kebersihan lingkungan akademik. Namun, lokasinya yang berada di belakang serta pencatatan yang masih konvensional membuat banyak mahasiswa belum mengetahui alur penyetoran maupun nilai ekonomis sampah terpilah.
+            </p>
+            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+              <strong>UMK EcoBank</strong> lahir sebagai solusi transformasi digital berbasis web. Website ini menjembatani informasi lokasi, transparansi harga sampah per kilogram, edukasi pemilahan, hingga kalkulator tabungan digital bagi seluruh civitas akademika.
+            </p>
+            <div class="pt-2">
+              <button onclick="navigateTo('edukasi')" class="px-6 py-3 rounded-xl bg-eco-primary hover:bg-eco-dark text-white font-semibold transition inline-flex items-center gap-2">
+                <span>Eksplorasi Katalog Sampah</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pilar Card -->
+          <div class="bg-white rounded-3xl p-7 sm:p-9 border border-slate-200/80 shadow-lg space-y-6">
+            <h3 class="font-display font-bold text-xl text-slate-900 border-b border-slate-100 pb-4">4 Pilar Utama Green Campus UMK</h3>
+            
+            <div class="flex gap-4">
+              <div class="w-11 h-11 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center shrink-0">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Transparansi Nilai Tukar</h4>
+                <p class="text-sm text-slate-600 mt-1">Daftar harga sampah per kilogram diperbarui secara terbuka agar mahasiswa termotivasi memilah.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="w-11 h-11 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center shrink-0">
+                <i data-lucide="calendar-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Zero-Waste Campus Event</h4>
+                <p class="text-sm text-slate-600 mt-1">Kemudahan pelaporan dan penjemputan kardus serta botol plastik pasca-kegiatan UKM maupun Himpunan.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="w-11 h-11 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center shrink-0">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Edukasi Pemilahan Terpadu</h4>
+                <p class="text-sm text-slate-600 mt-1">Panduan visual pemisahan sampah anorganik bersih dan residu agar bernilai daur ulang tinggi.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <i data-lucide="award" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-base">Gamifikasi EcoPoin</h4>
+                <p class="text-sm text-slate-600 mt-1">Setiap kilogram sampah menghasilkan poin reward yang dapat ditukar merchandise ramah lingkungan.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informasi Tim Pengembang-->
+        <div class="bg-eco-soft/80 rounded-3xl p-8 sm:p-10 border border-eco-primary/20">
+          <div class="text-center max-w-xl mx-auto mb-10">
+            <span class="px-3.5 py-1 rounded-full bg-white text-eco-primary text-xs font-bold border border-eco-primary/20">Dies Natalis Teknik Informatika 2026</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 mt-3">Tim Pengembang Inovasi</h2>
+            <p class="text-sm text-slate-600 mt-2">Dikembangkan oleh mahasiswa Teknik Informatika Universitas Muria Kudus untuk mendukung ekosistem kampus hijau.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
+              <div class="w-16 h-16 rounded-full bg-eco-primary text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
+                K1
+              </div>
+              <h4 class="font-bold text-slate-900">Ketua Tim Pengembang</h4>
+              <p class="text-xs font-semibold text-eco-primary mt-1">UI/UX Designer & Frontend</p>
+              <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
+              <div class="w-16 h-16 rounded-full bg-eco-dark text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
+                A1
+              </div>
+              <h4 class="font-bold text-slate-900">Anggota Tim 1</h4>
+              <p class="text-xs font-semibold text-eco-primary mt-1">Logic & JavaScript Developer</p>
+              <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center shadow-sm">
+              <div class="w-16 h-16 rounded-full bg-amber-500 text-white font-display font-bold text-xl flex items-center justify-center mx-auto mb-4">
+                A2
+              </div>
+              <h4 class="font-bold text-slate-900">Anggota Tim 2</h4>
+              <p class="text-xs font-semibold text-eco-primary mt-1">Riset Lingkungan & Konten</p>
+              <p class="text-xs text-slate-500 mt-2">Program Studi Teknik Informatika • UMK</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- *******************************************************
+         HALAMAN 3: EDUKASI & KATALOG
+    ******************************************************** -->
+    <section id="view-edukasi" class="page-view">
+      <!-- Page Banner -->
+      <div class="bg-eco-dark text-white py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Katalog & Panduan Pemilahan</span>
+          <h1 class="font-display font-extrabold text-3xl sm:text-4xl mt-3">Edukasi & Nilai Tukar Sampah</h1>
+          <p class="text-emerald-100 max-w-2xl mx-auto mt-3 text-sm sm:text-base">
+            Ketahui jenis sampah anorganik yang diterima oleh unit Bank Sampah UMK beserta estimasi nilai ekonomisnya per kilogram.
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-10">
+          <button onclick="filterCatalog('all', this)" class="catalog-filter-btn active px-5 py-2.5 rounded-full text-sm font-semibold bg-eco-primary text-white shadow-sm transition">
+            Semua Kategori (6)
+          </button>
+          <button onclick="filterCatalog('plastik', this)" class="catalog-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-primary hover:text-eco-primary transition">
+            Plastik
+          </button>
+          <button onclick="filterCatalog('kertas', this)" class="catalog-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-primary hover:text-eco-primary transition">
+            Kertas & Kardus
+          </button>
+          <button onclick="filterCatalog('logam', this)" class="catalog-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-primary hover:text-eco-primary transition">
+            Logam & E-Waste
+          </button>
+        </div>
+
+        <!-- Katalog Grid -->
+        <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <!-- Item 1 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="plastik">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <i data-lucide="milk" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold">Plastik</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Botol Plastik PET Bersih</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Botol air mineral dan minuman ringan tanpa label merek serta dalam kondisi kosong/remuk agar hemat ruang.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 3.500 / kg</span>
+              <button onclick="quickSelectWaste('3500')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="kertas">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-eco-primary flex items-center justify-center">
+                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-50 text-eco-primary text-xs font-bold">Kertas</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Kertas HVS & Arsip Kuliah</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Kertas bekas print tugas, revisi skripsi, atau fotokopi yang kering dan bebas dari klip besi maupun sampul plastik.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 2.500 / kg</span>
+              <button onclick="quickSelectWaste('2500')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="kertas">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                  <i data-lucide="package" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-50 text-eco-primary text-xs font-bold">Kertas</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Kardus Bekas Kemasan</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Kardus konsumsi acara seminar, lomba, atau paket logistik kampus yang sudah dilipat rapi dan tidak basah.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 2.000 / kg</span>
+              <button onclick="quickSelectWaste('2000')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="plastik">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <i data-lucide="cup-soda" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold">Plastik</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Gelas Plastik PP</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Gelas air mineral kemasan kegiatan kampus, dipisahkan dari sedotan dan lapisan plastik penutup atasnya.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 3.000 / kg</span>
+              <button onclick="quickSelectWaste('3000')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="logam">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                  <i data-lucide="cylinder" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">Logam</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Kaleng Aluminium</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Kaleng minuman bersoda atau kopi kemasan yang telah dibilas bersih agar tidak mengundang semut.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 11.000 / kg</span>
+              <button onclick="quickSelectWaste('11000')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="catalog-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between" data-category="logam">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+                  <i data-lucide="plug-zap" class="w-6 h-6"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold">E-Waste</span>
+              </div>
+              <h3 class="font-display font-bold text-lg text-slate-900">Limbah Kabel & E-Waste</h3>
+              <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Kabel LAN bekas, charger rusak, atau komponen elektronik kecil sisa praktikum laboratorium teknik.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm">Rp 8.000 / kg</span>
+              <button onclick="quickSelectWaste('8000')" class="text-xs font-semibold text-eco-primary hover:underline flex items-center gap-1">
+                Hitung Setor <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artikel Panduan Zero-Waste Kampus -->
+        <div class="mt-20">
+          <div class="text-center max-w-2xl mx-auto mb-10">
+            <span class="px-4 py-1.5 rounded-full bg-eco-light text-eco-dark text-xs font-bold uppercase tracking-wider">Artikel Edukasi</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 mt-3">Panduan Praktis Zero-Waste di Kampus</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <article class="bg-white rounded-2xl p-7 sm:p-8 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center gap-2 text-xs font-semibold text-eco-primary mb-3">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>TIPS PEMILAHAN • 3 MENIT BACA</span>
+              </div>
+              <h3 class="font-display font-bold text-xl text-slate-900 mb-3">Mengapa Sampah Terpilah Bernilai Jual 3x Lebih Tinggi?</h3>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                Ketika botol plastik tercampur sisa makanan atau tumpukan kertas terkena air hujan, kualitas seratnya rusak dan nilai daur ulangnya turun drastis hingga berakhir sebagai residu di TPA Tanjungrejo.
+              </p>
+              <ul class="space-y-2 text-sm text-slate-700">
+                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-eco-primary mt-0.5 shrink-0"></i> Kosongkan sisa air dalam botol sebelum dimasukkan ke drop-box.</li>
+                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-eco-primary mt-0.5 shrink-0"></i> Lepas label plastik botol PET untuk mempercepat proses pencacahan.</li>
+              </ul>
+            </article>
+
+            <article class="bg-white rounded-2xl p-7 sm:p-8 border border-slate-200/80 shadow-sm">
+              <div class="flex items-center gap-2 text-xs font-semibold text-amber-600 mb-3">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                <span>PANDUAN ORMAWA • EVENT KAMPUS</span>
+              </div>
+              <h3 class="font-display font-bold text-xl text-slate-900 mb-3">Checklist Panitia Acara Kampus Bebas Timbunan Sampah</h3>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                Setiap seminar, lomba, atau Dies Natalis menghasilkan ratusan dus snack dan botol air mineral. Dengan manajemen sederhana, sampah acara bisa berubah menjadi tambahan kas kepanitiaan.
+              </p>
+              <ul class="space-y-2 text-sm text-slate-700">
+                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-eco-primary mt-0.5 shrink-0"></i> Sediakan kantong pilah khusus dus snack kering dan botol plastik.</li>
+                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-eco-primary mt-0.5 shrink-0"></i> Gunakan menu Contact untuk request penjemputan tim UMK EcoBank.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- *******************************************************
+         HALAMAN 4: SIMULASI SETOR (Kalkulator Digital)
+    ******************************************************** -->
+    <section id="view-simulasi" class="page-view">
+      <!-- Page Banner -->
+      <div class="bg-eco-dark text-white py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Kalkulator Tabungan Sampah</span>
+          <h1 class="font-display font-extrabold text-3xl sm:text-4xl mt-3">Simulasi Setor Bank Sampah</h1>
+          <p class="text-emerald-100 max-w-2xl mx-auto mt-3 text-sm sm:text-base">
+            Hitung estimasi saldo rupiah dan bonus EcoPoin secara real-time sebelum menyetorkan sampah ke unit Bank Sampah pojok belakang kampus UMK.
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Form Input (6 cols) -->
+          <div class="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center">
+                <i data-lucide="scale" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="font-display font-bold text-xl text-slate-900">Input Data Sampah Terpilah</h2>
+                <p class="text-xs text-slate-500">Data otomatis tersimpan di perangkat Anda</p>
+              </div>
+            </div>
+
+            <form id="depositForm" class="space-y-5">
+              <div>
+                <label for="studentNim" class="block text-sm font-semibold text-slate-700 mb-2">NIM Mahasiswa / Nama Unit Ormawa</label>
+                <input type="text" id="studentNim" placeholder="Contoh: 202451088 atau HIMATIF UMK" required
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+              </div>
+
+              <div>
+                <label for="wasteType" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Jenis Sampah</label>
+                <select id="wasteType" onchange="updateLiveEstimate()"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+                  <option value="3500" data-name="Botol Plastik PET Bersih">Botol Plastik PET Bersih — Rp 3.500/kg</option>
+                  <option value="2500" data-name="Kertas HVS & Arsip Kuliah">Kertas HVS & Arsip Kuliah — Rp 2.500/kg</option>
+                  <option value="2000" data-name="Kardus Bekas Kemasan">Kardus Bekas Kemasan — Rp 2.000/kg</option>
+                  <option value="3000" data-name="Gelas Plastik PP">Gelas Plastik PP — Rp 3.000/kg</option>
+                  <option value="11000" data-name="Kaleng Aluminium">Kaleng Aluminium — Rp 11.000/kg</option>
+                  <option value="8000" data-name="Limbah Kabel & E-Waste">Limbah Kabel & E-Waste — Rp 8.000/kg</option>
+                </select>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <label for="wasteWeight" class="block text-sm font-semibold text-slate-700">Perkiraan Berat (Kg)</label>
+                  <span id="livePreviewBadge" class="text-xs font-semibold text-eco-primary bg-eco-soft px-2.5 py-0.5 rounded-md">
+                    Estimasi: Rp 0 • +0 Poin
+                  </span>
+                </div>
+                <input type="number" id="wasteWeight" step="0.1" min="0.1" placeholder="Contoh: 2.5" oninput="updateLiveEstimate()" required
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+              </div>
+
+              <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-eco-primary hover:bg-eco-dark text-white font-semibold shadow-md shadow-eco-primary/20 transition flex items-center justify-center gap-2">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                <span>Tambahkan ke Daftar Setor</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Right Digital Receipt (6 cols) -->
+          <div id="printableReceipt" class="lg:col-span-6 bg-eco-soft/70 rounded-3xl p-6 sm:p-8 border-2 border-dashed border-eco-primary/50">
+            <div class="flex items-center justify-between border-b border-eco-primary/20 pb-4 mb-5">
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-eco-primary">Struk Tabungan Digital</span>
+                <h3 class="font-display font-bold text-xl text-slate-900">Ringkasan Setor Sampah</h3>
+                <p id="receiptOwnerLabel" class="text-xs text-slate-500 mt-0.5">Nasabah: Belum diisi</p>
+              </div>
+              <button onclick="resetDeposits()" class="px-3 py-1.5 rounded-lg bg-white text-rose-600 hover:bg-rose-50 border border-rose-200 text-xs font-semibold transition flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Reset
+              </button>
+            </div>
+
+            <!-- Item List -->
+            <div id="receiptList" class="space-y-3 max-h-72 overflow-y-auto pr-1">
+              <!-- Diisi via JavaScript -->
+            </div>
+
+            <!-- Totals -->
+            <div class="mt-6 pt-5 border-t border-eco-primary/20 space-y-2.5">
+              <div class="flex justify-between items-center text-sm text-slate-600">
+                <span>Total Berat Sampah:</span>
+                <span id="totalWeightDisplay" class="font-bold text-slate-900">0 Kg</span>
+              </div>
+              <div class="flex justify-between items-center text-sm text-eco-primary font-semibold">
+                <span>Bonus EcoPoin (10 Poin/Kg):</span>
+                <span id="totalPointsDisplay" class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">+0 EcoPoin</span>
+              </div>
+              <div class="flex justify-between items-center pt-2 text-lg sm:text-xl font-display font-extrabold text-eco-dark">
+                <span>Estimasi Saldo Rupiah:</span>
+                <span id="totalRupiahDisplay">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="openReceiptModal()" class="py-3 px-4 rounded-xl bg-eco-dark hover:bg-slate-900 text-white text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+                <i data-lucide="ticket" class="w-4 h-4"></i> Buat Tiket Setor
+              </button>
+              <button onclick="window.print()" class="py-3 px-4 rounded-xl bg-white hover:bg-slate-50 text-eco-dark border border-eco-primary/30 text-sm font-semibold transition flex items-center justify-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4"></i> Cetak Struk
+              </button>
+            </div>
+
+            <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
+              *Tunjukkan tiket setor digital ini kepada petugas di unit Bank Sampah UMK (zona pojok belakang kampus) untuk verifikasi timbangan fisik dan pencairan saldo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- *******************************************************
+         HALAMAN 5: CONTACT
+    ******************************************************** -->
+    <section id="view-contact" class="page-view">
+      <!-- Page Banner -->
+      <div class="bg-eco-dark text-white py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <span class="px-3.5 py-1 rounded-full bg-white/15 text-eco-light text-xs font-semibold uppercase tracking-wider">Lokasi & Layanan Jemput</span>
+          <h1 class="font-display font-extrabold text-3xl sm:text-4xl mt-3">Hubungi Pengelola Bank Sampah</h1>
+          <p class="text-emerald-100 max-w-2xl mx-auto mt-3 text-sm sm:text-base">
+            Temukan titik lokasi unit Bank Sampah di pojok belakang kampus UMK atau ajukan layanan penjemputan sampah acara kampus.
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Info Lokasi & Jam Operasional (5 cols) -->
+          <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm space-y-6">
+              <h2 class="font-display font-bold text-xl text-slate-900">Informasi Unit UMK EcoBank</h2>
+
+              <div class="flex gap-4">
+                <div class="w-11 h-11 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center shrink-0">
+                  <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Titik Lokasi Unit</h4>
+                  <p class="text-sm text-slate-600 mt-1 leading-relaxed">
+                    Zona Pengelolaan Lingkungan Terpadu (Area Pojok Belakang Kampus), Universitas Muria Kudus, Jl. Lingkar Utara, Gondangmanis, Bae, Kudus.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="w-11 h-11 rounded-xl bg-eco-light text-eco-primary flex items-center justify-center shrink-0">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Jam Operasional Penimbangan</h4>
+                  <p class="text-sm text-slate-600 mt-1">Senin – Jumat: 09.00 – 15.00 WIB</p>
+                  <p class="text-sm text-slate-600">Sabtu (Khusus Event Ormawa): 09.00 – 12.00 WIB</p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                  <i data-lucide="phone-call" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Kontak Layanan Kampus</h4>
+                  <p class="text-sm text-slate-600 mt-1">Email: ecobank@umk.ac.id</p>
+                  <p class="text-sm text-slate-600">Hotline Tim: +62 812-0000-2026</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Denah Kampus Sederhana (SVG) -->
+            <div class="bg-eco-soft rounded-3xl p-6 border border-eco-primary/20">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-eco-dark uppercase tracking-wider">Denah Akses Titik Kumpul</span>
+                <span class="text-xs font-semibold text-eco-primary">Pojok Belakang Kampus</span>
+              </div>
+              <svg viewBox="0 0 400 180" class="w-full h-auto rounded-2xl bg-white border border-eco-primary/15 p-2">
+                <!-- Jalan & Area -->
+                <rect x="10" y="10" width="380" height="160" rx="12" fill="#f8fafc" />
+                <!-- Gedung Utama -->
+                <rect x="35" y="95" width="120" height="55" rx="8" fill="#e2e8f0" />
+                <text x="95" y="126" font-size="11" font-weight="bold" fill="#475569" text-anchor="middle">Gedung Kuliah & Lab</text>
+                <!-- Jalur Akses -->
+                <path d="M 155 122 L 245 122 L 245 55 L 285 55" stroke="#15803d" stroke-width="4" stroke-dasharray="6 4" fill="none" />
+                <!-- Titik Bank Sampah Pojok Belakang -->
+                <rect x="275" y="25" width="100" height="60" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="2" />
+                <circle cx="325" cy="43" r="6" fill="#15803d" />
+                <text x="325" y="62" font-size="10" font-weight="bold" fill="#14532d" text-anchor="middle">UMK EcoBank</text>
+                <text x="325" y="74" font-size="8" fill="#15803d" text-anchor="middle">(Pojok Belakang)</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Form Request Penjemputan (7 cols) -->
+          <div class="lg:col-span-7 bg-white rounded-3xl p-7 sm:p-9 border border-slate-200/80 shadow-sm">
+            <h2 class="font-display font-bold text-2xl text-slate-900">Formulir Request Jemput / Pertanyaan</h2>
+            <p class="text-sm text-slate-600 mt-1 mb-6">
+              Gunakan formulir ini untuk meminta penjemputan sampah terpilah pasca-acara fakultas/Ormawa atau konsultasi pengelolaan limbah kampus.
+            </p>
+
+            <form id="contactForm" class="space-y-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="senderName" class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap / Ketua Panitia</label>
+                  <input type="text" id="senderName" placeholder="Nama Anda" required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+                </div>
+                <div>
+                  <label for="senderFaculty" class="block text-sm font-semibold text-slate-700 mb-2">Fakultas / Ormawa</label>
+                  <input type="text" id="senderFaculty" placeholder="Contoh: Fakultas Teknik" required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="serviceType" class="block text-sm font-semibold text-slate-700 mb-2">Jenis Layanan</label>
+                  <select id="serviceType" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+                    <option value="Penjemputan Sampah Event">Penjemputan Sampah Event Kampus</option>
+                    <option value="Setor Kolektif Kelas">Setor Kolektif Kelas / Sekretariat</option>
+                    <option value="Pertanyaan & Saran">Pertanyaan & Saran Green Campus</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="pickupDate" class="block text-sm font-semibold text-slate-700 mb-2">Rencana Tanggal</label>
+                  <input type="date" id="pickupDate" required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition">
+                </div>
+              </div>
+
+              <div>
+                <label for="senderMessage" class="block text-sm font-semibold text-slate-700 mb-2">Detail Lokasi Gedung & Perkiraan Jumlah Sampah</label>
+                <textarea id="senderMessage" rows="4" placeholder="Contoh: Auditorium Gedung J, sekitar 4 kantong besar botol plastik dan kardus snack seminar..." required
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-eco-primary/30 focus:border-eco-primary transition"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-eco-primary hover:bg-eco-dark text-white font-semibold shadow-md shadow-eco-primary/20 transition flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Kirim Permintaan Sekarang</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer class="bg-slate-900 text-slate-300 pt-14 pb-8 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-10 border-b border-slate-800">
+        <!-- Brand Col -->
+        <div class="md:col-span-5 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-eco-primary text-white flex items-center justify-center">
+              <i data-lucide="recycle" class="w-5 h-5"></i>
+            </div>
+            <span class="font-display font-extrabold text-xl text-white">UMK EcoBank</span>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Platform digitalisasi pengelolaan Bank Sampah di area pojok belakang kampus Universitas Muria Kudus. Mengubah sampah terpilah menjadi tabungan mahasiswa dan mendukung visi Green Campus berkelanjutan.
+          </p>
+        </div>
+
+        <!-- Links Col -->
+        <div class="md:col-span-3 space-y-3">
+          <h4 class="font-display font-bold text-white text-sm uppercase tracking-wider">Navigasi Halaman</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><button onclick="navigateTo('home')" class="hover:text-emerald-400 transition">Home</button></li>
+            <li><button onclick="navigateTo('about')" class="hover:text-emerald-400 transition">About UMK EcoBank</button></li>
+            <li><button onclick="navigateTo('edukasi')" class="hover:text-emerald-400 transition">Edukasi & Katalog</button></li>
+            <li><button onclick="navigateTo('simulasi')" class="hover:text-emerald-400 transition">Simulasi Setor</button></li>
+            <li><button onclick="navigateTo('contact')" class="hover:text-emerald-400 transition">Contact & Lokasi</button></li>
+          </ul>
+        </div>
+
+        <!-- Location Col -->
+        <div class="md:col-span-4 space-y-3">
+          <h4 class="font-display font-bold text-white text-sm uppercase tracking-wider">Unit Operasional</h4>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Area Pojok Belakang Kampus<br>
+            Universitas Muria Kudus (UMK)<br>
+            Gondangmanis, Kec. Bae, Kabupaten Kudus, Jawa Tengah 59327
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>&copy; 2026 UMK EcoBank. Karya Lomba Web Design 2026.</p>
+        <p class="text-emerald-500 font-medium">Bersama Mewujudkan Kampus Hijau & Zero-Waste</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       JAVASCRIPT LOGIC (Navigasi, Counter, Filter, Kalkulator)
+  ========================================================= -->
+  <script src="js/script.js"></script>
+</body>
+</html>
