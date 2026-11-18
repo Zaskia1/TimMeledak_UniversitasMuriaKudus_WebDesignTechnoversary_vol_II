@@ -3,20 +3,6 @@
 ## Deskripsi Website
 UMK EcoBank adalah website bertema lingkungan yang mengangkat digitalisasi layanan Bank Sampah di Universitas Muria Kudus. Website ini menyediakan informasi profil dan lokasi unit, edukasi pemilahan sampah, katalog jenis dan estimasi nilai tukar sampah, simulasi setoran, serta formulir kontak dan permintaan penjemputan.
 
-Tampilan, teks, susunan halaman, warna, komponen, dan interaksi dipisahkan dari satu file HTML menjadi beberapa file tanpa sengaja mengubah desain atau isi website sumber.
-
-## Struktur Folder
-```text
-webdesign_umk_ecobank_technoversary_vol_II/
-├── index.html
-├── README.md
-├── css/
-│   └── style.css
-└── js/
-    ├── tailwind.config.js
-    └── script.js
-```
-
 ## Petunjuk Instalasi
 1. Unduh atau clone repository ini.
 2. Pastikan seluruh folder dan file tetap berada dalam susunan seperti di atas.
@@ -33,3 +19,12 @@ webdesign_umk_ecobank_technoversary_vol_II/
 - Ketua: Zaskia Amelia Putri
 - Anggota 1: Ramadan
 - Anggota 2: Anggitia Bintang Triyana
+
+## Catatan dan Disclaimer
+Website UMK EcoBank merupakan prototype atau rancangan website yang dikembangkan untuk keperluan perlombaan Web Design Technoversary Vol. II dengan tema lingkungan.
+
+Seluruh data, informasi, nominal nilai tukar sampah, simulasi transaksi, lokasi unit, serta fitur permintaan penjemputan yang ditampilkan di dalam website ini hanya digunakan sebagai data ilustrasi dan simulasi untuk keperluan demonstrasi perlombaan.
+
+Website ini belum terintegrasi dengan sistem Bank Sampah Universitas Muria Kudus secara resmi. Oleh karena itu, seluruh aktivitas dan transaksi yang dilakukan melalui website tidak bersifat nyata dan tidak diproses sebagai transaksi sebenarnya.
+
+Informasi yang ditampilkan dapat disesuaikan apabila website dikembangkan dan diimplementasikan secara resmi di kemudian hari.
